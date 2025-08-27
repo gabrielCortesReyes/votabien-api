@@ -5,10 +5,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.api.routes_law_projects import router as law_projects_router
-from app.api.routes_parliament_members import router as members_router
+from app.api import parliament
 
-app = FastAPI(title="Legislative API", version="0.1.0")
+from app.api import parliament
+from app.api import parties
+
+app = FastAPI(title="VotaBien API", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -18,8 +20,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(law_projects_router, prefix=settings.api_prefix)
-app.include_router(members_router,     prefix=settings.api_prefix)
+app.include_router(parliament.router, prefix=settings.api_prefix)
+app.include_router(parties.router, prefix=settings.api_prefix)
+
 
 @app.get(settings.api_prefix + "/health")
 def health():

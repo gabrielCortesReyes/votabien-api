@@ -1,26 +1,35 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, Text
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.db.base import Base
 
-class Party(Base):
-    __tablename__ = "party"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    name: Mapped[str] = mapped_column(String)
-
 class ParliamentMember(Base):
     __tablename__ = "parliament_member"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    full_name: Mapped[str] = mapped_column(String, index=True)
-    party_id: Mapped[int | None] = mapped_column(ForeignKey("party.id"), nullable=True)
-    district: Mapped[str | None] = mapped_column(String, nullable=True)
+    id = Column(Integer, primary_key=True, index=True)
+    parlid = Column(Integer, unique=True, nullable=False)
+    role = Column(String(10), nullable=False)
 
-    party = relationship("Party", lazy="joined")
+    first_name = Column(String(50), nullable=False)
+    middle_name = Column(String(50), nullable=True)
+    last_name = Column(String(50), nullable=False)
+    second_last_name = Column(String(50), nullable=True)
 
-class LawProject(Base):
-    __tablename__ = "law_projects"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    project_id: Mapped[str | None] = mapped_column(String, index=True)  # ej: "Boletín 12345-06"
-    name: Mapped[str] = mapped_column(String, index=True)
-    admission_date: Mapped[Date | None] = mapped_column(Date, nullable=True)
-    legislative_stage: Mapped[str | None] = mapped_column(String, nullable=True)
-    status: Mapped[str | None] = mapped_column(String, nullable=True)  # "Aprobado", "En discusión", etc.
+    birth_date = Column(Date, nullable=True)
+    gender = Column(String(10), nullable=False)
+    region = Column(String(100), nullable=True)
+    constituency = Column(String(10), nullable=True)
+
+    party_id = Column(Integer, ForeignKey("party.id"), nullable=True)
+    phone = Column(String(50), nullable=True)
+    email = Column(String(100), nullable=True)
+    curriculum = Column(Text, nullable=True)
+    
+class Party(Base):
+    __tablename__ = "party"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), unique=True, nullable=False)
+    abbreviation = Column(String(10), nullable=True)
+
+    img_url = Column(String(200), nullable=True)
+    created_at = Column(Date, nullable=False)
+    updated_at = Column(Date, nullable=False)
+
