@@ -8,13 +8,14 @@ from sqlalchemy.orm import Session
 from sqlalchemy import and_
 
 from app.db.base import get_db
-from app.db.models import ParliamentMember, Party, PartyMembership
+from app.db.models import ParliamentMember, Party, PartyMembership, Attendance
 from app.schemas.schemas import (
     ParliamentMemberSchema,
     PartyWithMembershipSchema,
     MemberWithCurrentPartySchema,
     MemberWithAllPartiesSchema,
     MembershipSchema,
+    AttendanceSchema,
 )
 
 router = APIRouter(prefix="/parliament", tags=["parliament"])
@@ -110,3 +111,11 @@ async def get_member_with_all_parties(id: int, db: Session = Depends(get_db)):
     ]
 
     return {"member": member, "parties": parties}
+
+# ------------------------------------------------------------
+# Asistencia de un Diputado
+# ------------------------------------------------------------
+@router.get("/{id}/attendances", response_model=List[AttendanceSchema])
+async def get_member_attendance(id: int, db: Session = Depends(get_db)):
+    rows = db.query(Attendance).filter(Attendance.parliament_member_id == id).all()
+    return rows

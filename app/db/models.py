@@ -2,7 +2,7 @@
 # MODELS
 # ============================
 
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, Text, DateTime
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, Text, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 
@@ -56,3 +56,33 @@ class PartyMembership(Base):
     
     start_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime, nullable=True)
+
+
+class Attendance(Base):
+    __tablename__ = "attendances"
+
+    id = Column(Integer, primary_key=True, index=True)
+    session_id = Column(Integer, ForeignKey("legislative_session.id", ondelete="NO ACTION"), nullable=False)
+    parliament_member_id = Column(Integer, ForeignKey("parliament_member.id", ondelete="NO ACTION"), nullable=False)
+
+    attendance_type = Column(String(50), nullable=False)
+    justification = Column(String(255), nullable=True)
+
+    reduces_attendance = Column(Boolean, nullable=True)
+    reduces_quorum = Column(Boolean, nullable=True)
+
+    member = relationship("ParliamentMember", backref="attendances")
+    session = relationship("LegislativeSession", backref="attendances")
+
+
+class LegislativeSession(Base):
+    __tablename__ = "legislative_session"
+
+    id = Column(Integer, primary_key=True, index=True)
+    session_number = Column(Integer, nullable=False)
+
+    start_date = Column(DateTime, nullable=False)
+    end_date = Column(DateTime, nullable=True)
+
+    session_type = Column(String(50), nullable=False)   
+    session_status = Column(String(50), nullable=False)

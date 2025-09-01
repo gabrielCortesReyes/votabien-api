@@ -87,3 +87,20 @@ class MemberWithAllPartiesSchema(BaseModel):
 
 class PartyWithMembersSchema(PartySchema):
     members: List[MemberWithMembershipSchema]
+
+# ------------------------------------------------------------
+# Attendance
+# ------------------------------------------------------------
+class AttendanceSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
+    id: int
+    session_id: int
+    parliament_member_id: int
+
+    attendance_type: str
+    justification: Optional[str] = None
+
+    reduces_attendance: Optional[bool] = None
+    reduces_quorum: Optional[bool] = None
+
