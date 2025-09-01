@@ -1,12 +1,21 @@
+# ============================
+# BASE & SESSION
+# ============================
+
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from app.configs.config import connection_string_pgsql
+from sqlalchemy.orm import declarative_base, sessionmaker
+from app.core.config import settings
 
-SQLALCHEMY_DATABASE_URL = connection_string_pgsql
+engine = create_engine(
+    settings.db_url,   
+    pool_pre_ping=True,
+)
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(
+    bind=engine,
+    autocommit=False,
+    autoflush=False,
+)
 
 Base = declarative_base()
 

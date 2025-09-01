@@ -1,6 +1,22 @@
+# ============================
+# DEPENDENCIAS DEL PROYECTO
+# ============================
+
+# Framework
 fastapi==0.114.0
+
+# Servidor
 uvicorn[standard]==0.30.6
+
+# ORM
 SQLAlchemy==2.0.35
+
+# Manejo de Variables de Entorno
 python-dotenv==1.0.1
+
+# Validación de Datos y Modelos
 pydantic==2.8.2
 pydantic-settings==2.4.0
+
+# Instalar dependencias
+# pip install -r requirements.txt
