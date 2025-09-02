@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import and_
 
 from app.db.base import get_db
-from app.db.models import ParliamentMember, Party, PartyMembership, Attendance, LegislativeSession
+from app.db.models import ParliamentMember, Party, PartyMembership, Attendance
 from app.schemas.schemas import (
     ParliamentMemberSchema,
     PartyWithMembershipSchema,
@@ -16,7 +16,7 @@ from app.schemas.schemas import (
     MemberWithAllPartiesSchema,
     MembershipSchema,
     AttendanceSchema,
-    SessionWithAttendancesSchema,
+    MemberAttendanceResponseSchema,
 )
 
 router = APIRouter(prefix="/parliament", tags=["parliament"])
@@ -116,7 +116,38 @@ async def get_member_with_all_parties(id: int, db: Session = Depends(get_db)):
 # ------------------------------------------------------------
 # Asistencia de un Diputado
 # ------------------------------------------------------------
-@router.get("/{id}/attendances", response_model=List[AttendanceSchema])
+@router.get("/{id}/attendances", response_model=MemberAttendanceResponseSchema)
 async def get_member_attendance(id: int, db: Session = Depends(get_db)):
-    rows = db.query(Attendance).filter(Attendance.parliament_member_id == id).all()
-    return rows
+
+    member = db.query(ParliamentMember).filter(ParliamentMember.id == id).first()
+    if not member:
+        raise HTTPException(status_code=404, detail="Not found")
+
+    detail: List[Attendance] = (
+        db.query(Attendance)
+        .filter(Attendance.parliament_member_id == id)
+        .order_by(Attendance.id.asc())
+        .all()
+    )
+
+    PRESENT_ALIASES = {"asiste"}
+    total_sessions = len(detail)
+    present = 0
+    for a in detail:
+        t = (a.attendance_type or "").strip().lower()
+        if t in PRESENT_ALIASES:
+            present += 1
+
+    absent = max(total_sessions - present, 0)
+    present_pct = round((present / total_sessions) * 100, 2) if total_sessions else 0.0
+
+    return {
+        "member": member,
+        "resume": {
+            "total_sessions": total_sessions,
+            "attendance": present,
+            "absence": absent,
+            "attendance_percentage": present_pct,
+        },
+        "detail": detail,
+    }

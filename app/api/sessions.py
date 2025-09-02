@@ -7,11 +7,10 @@ from typing import List
 from sqlalchemy.orm import Session, joinedload
 
 from app.db.base import get_db
-from app.db.models import LegislativeSession, Attendance, ParliamentMember
+from app.db.models import LegislativeSession, Attendance
 from app.schemas.schemas import (
     LegislativeSessionSchema,
     AttendanceSchema,
-    SessionWithAttendancesSchema,
     AttendanceWithMemberSchema,
     SessionWithAttendancesAndMembersSchema,
     ParliamentMemberSchema,
@@ -42,27 +41,10 @@ def get_session(id: int, db: Session = Depends(get_db)):
     return s
 
 # ------------------------------------------------------------
-# Asistencias de una Sesión
-# ------------------------------------------------------------
-@router.get("/{id}/attendances", response_model=SessionWithAttendancesSchema)
-def get_session_attendances(id: int, db: Session = Depends(get_db)):
-    s = db.query(LegislativeSession).filter(LegislativeSession.id == id).first()
-    if not s:
-        raise HTTPException(status_code=404, detail="Not found")
-
-    rows = (
-        db.query(Attendance)
-        .filter(Attendance.session_id == id)
-        .order_by(Attendance.id.asc())
-        .all()
-    )
-    return {"session": s, "attendances": rows}
-
-# ------------------------------------------------------------
 # Asistencias de una Sesión + Datos del Diputado
 # ------------------------------------------------------------
-@router.get("/{id}/attendances/full", response_model=SessionWithAttendancesAndMembersSchema)
-def get_session_attendances_full(id: int, db: Session = Depends(get_db)):
+@router.get("/{id}/attendances", response_model=SessionWithAttendancesAndMembersSchema)
+def get_session_attendances(id: int, db: Session = Depends(get_db)):
     s = db.query(LegislativeSession).filter(LegislativeSession.id == id).first()
     if not s:
         raise HTTPException(status_code=404, detail="Not found")

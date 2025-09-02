@@ -10,7 +10,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api import parliament, parties, sessions
 
-
 # ------------------------------------------------------------
 # Inicialización de la App
 # ------------------------------------------------------------

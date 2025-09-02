@@ -2,12 +2,9 @@
 # SCHEMAS 
 # ============================
 
-from fastapi import FastAPI
 from pydantic import BaseModel, ConfigDict
 from datetime import date, datetime
 from typing import List, Optional
-
-app = FastAPI()
 
 # ------------------------------------------------------------
 # Parliament Member
@@ -74,16 +71,20 @@ class MembershipSchema(BaseModel):
 class PartyWithMembershipSchema(PartySchema):
     membership: Optional[MembershipSchema] = None
 
+
 class MemberWithMembershipSchema(ParliamentMemberSchema):
     membership: Optional[MembershipSchema] = None
+
 
 class MemberWithCurrentPartySchema(BaseModel):
     member: ParliamentMemberSchema
     party: Optional[PartyWithMembershipSchema] = None
 
+
 class MemberWithAllPartiesSchema(BaseModel):
     member: ParliamentMemberSchema
     parties: List[PartyWithMembershipSchema]
+
 
 class PartyWithMembersSchema(PartySchema):
     members: List[MemberWithMembershipSchema]
@@ -112,21 +113,37 @@ class LegislativeSessionSchema(BaseModel):
 
     id: int
     session_number: int
+
     start_date: datetime
     end_date: Optional[datetime] = None
+
     session_type: str
     session_status: str
 
 # ------------------------------------------------------------
-# Esquemas Compuestos: Sesión con asistencias
+# Esquemas Compuestos: Sesión con Asistencias
 # ------------------------------------------------------------
 class AttendanceWithMemberSchema(AttendanceSchema):
     member: ParliamentMemberSchema
 
-class SessionWithAttendancesSchema(BaseModel):
-    session: LegislativeSessionSchema
-    attendances: List[AttendanceSchema]
 
 class SessionWithAttendancesAndMembersSchema(BaseModel):
     session: LegislativeSessionSchema
     attendances: List[AttendanceWithMemberSchema]
+
+# ------------------------------------------------------------
+# Resumen de Asistencias por Diputado
+# ------------------------------------------------------------
+class AttendanceResumeSchema(BaseModel):
+    total_sessions: int
+    attendance: int
+    absence: int
+    attendance_percentage: float
+
+# ------------------------------------------------------------
+# Esquema Compuesto: Diputado + Resumen + Detalle
+# ------------------------------------------------------------
+class MemberAttendanceResponseSchema(BaseModel):
+    member: ParliamentMemberSchema
+    resume: AttendanceResumeSchema
+    detail: List[AttendanceSchema]

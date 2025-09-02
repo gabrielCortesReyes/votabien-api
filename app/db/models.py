@@ -2,7 +2,7 @@
 # MODELS
 # ============================
 
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, Text, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, Text, DateTime, Boolean, func
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 
@@ -41,8 +41,8 @@ class Party(Base):
     abbreviation = Column(String(10), nullable=True)
 
     img_url = Column(String(200), nullable=True)
-    created_at = Column(Date, nullable=False)
-    updated_at = Column(Date, nullable=False)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
 
     members = relationship("ParliamentMember", secondary="party_membership", back_populates="parties")
 
