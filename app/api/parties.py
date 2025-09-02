@@ -26,7 +26,7 @@ def list_parties(db: Session = Depends(get_db)):
     return db.query(Party).all()
 
 # ------------------------------------------------------------
-# Partido + Miembros Actuales
+# Partido + Diputados Actuales
 # ------------------------------------------------------------ 
 @router.get("/{id}", response_model=PartyWithMembersSchema)
 def get_party_with_current_members(id: int, db: Session = Depends(get_db)):
@@ -59,7 +59,7 @@ def get_party_with_current_members(id: int, db: Session = Depends(get_db)):
     return PartyWithMembersSchema(**party.__dict__, members=members)
 
 # ------------------------------------------------------------
-# Lista de Miembros Actuales de un Partido
+# Lista de Diputados Actuales de un Partido
 # ------------------------------------------------------------
 @router.get("/{id}/members", response_model=List[MemberWithMembershipSchema])
 def get_party_current_members(id: int, db: Session = Depends(get_db)):

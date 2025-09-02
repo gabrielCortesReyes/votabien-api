@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import and_
 
 from app.db.base import get_db
-from app.db.models import ParliamentMember, Party, PartyMembership, Attendance
+from app.db.models import ParliamentMember, Party, PartyMembership, Attendance, LegislativeSession
 from app.schemas.schemas import (
     ParliamentMemberSchema,
     PartyWithMembershipSchema,
@@ -16,12 +16,13 @@ from app.schemas.schemas import (
     MemberWithAllPartiesSchema,
     MembershipSchema,
     AttendanceSchema,
+    SessionWithAttendancesSchema,
 )
 
 router = APIRouter(prefix="/parliament", tags=["parliament"])
 
 # ------------------------------------------------------------
-# Lista de Miembros
+# Lista de Diputados
 # ------------------------------------------------------------
 @router.get("/", response_model=List[ParliamentMemberSchema])
 async def list_members(db: Session = Depends(get_db)):

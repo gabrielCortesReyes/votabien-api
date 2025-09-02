@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.api import parliament, parties
+from app.api import parliament, parties, sessions
 
 
 # ------------------------------------------------------------
@@ -32,6 +32,7 @@ app.add_middleware(
 # ------------------------------------------------------------
 app.include_router(parliament.router, prefix=settings.api_prefix)
 app.include_router(parties.router, prefix=settings.api_prefix)
+app.include_router(sessions.router, prefix=settings.api_prefix)
 
 # ------------------------------------------------------------
 # Endpoint de Health Check

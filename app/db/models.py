@@ -62,7 +62,7 @@ class Attendance(Base):
     __tablename__ = "attendances"
 
     id = Column(Integer, primary_key=True, index=True)
-    session_id = Column(Integer, ForeignKey("legislative_session.id", ondelete="NO ACTION"), nullable=False)
+    session_id = Column(Integer, ForeignKey("legislative_sessions.id", ondelete="NO ACTION"), nullable=False)
     parliament_member_id = Column(Integer, ForeignKey("parliament_member.id", ondelete="NO ACTION"), nullable=False)
 
     attendance_type = Column(String(50), nullable=False)
@@ -76,7 +76,7 @@ class Attendance(Base):
 
 
 class LegislativeSession(Base):
-    __tablename__ = "legislative_session"
+    __tablename__ = "legislative_sessions"
 
     id = Column(Integer, primary_key=True, index=True)
     session_number = Column(Integer, nullable=False)

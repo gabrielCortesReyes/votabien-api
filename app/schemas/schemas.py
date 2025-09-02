@@ -104,3 +104,29 @@ class AttendanceSchema(BaseModel):
     reduces_attendance: Optional[bool] = None
     reduces_quorum: Optional[bool] = None
 
+# ------------------------------------------------------------
+# Legislative Session
+# ------------------------------------------------------------
+class LegislativeSessionSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    session_number: int
+    start_date: datetime
+    end_date: Optional[datetime] = None
+    session_type: str
+    session_status: str
+
+# ------------------------------------------------------------
+# Esquemas Compuestos: Sesión con asistencias
+# ------------------------------------------------------------
+class AttendanceWithMemberSchema(AttendanceSchema):
+    member: ParliamentMemberSchema
+
+class SessionWithAttendancesSchema(BaseModel):
+    session: LegislativeSessionSchema
+    attendances: List[AttendanceSchema]
+
+class SessionWithAttendancesAndMembersSchema(BaseModel):
+    session: LegislativeSessionSchema
+    attendances: List[AttendanceWithMemberSchema]
