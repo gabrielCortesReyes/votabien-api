@@ -147,3 +147,22 @@ class MemberAttendanceResponseSchema(BaseModel):
     member: ParliamentMemberSchema
     resume: AttendanceResumeSchema
     detail: List[AttendanceSchema]
+
+# ------------------------------------------------------------
+# District and Communes
+# ------------------------------------------------------------
+class DistrictSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    number: int
+
+
+class CommuneSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    name: str
+
+
+class DistrictWithCommunesSchema(BaseModel):
+    district: DistrictSchema
+    communes: List[CommuneSchema]

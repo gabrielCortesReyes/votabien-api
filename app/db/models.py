@@ -2,7 +2,7 @@
 # MODELS
 # ============================
 
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, Text, DateTime, Boolean, func
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, Text, DateTime, Boolean, UniqueConstraint, func
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 
@@ -86,3 +86,25 @@ class LegislativeSession(Base):
 
     session_type = Column(String(50), nullable=False)   
     session_status = Column(String(50), nullable=False)
+
+
+class District(Base):
+    __tablename__ = "districts"
+    id = Column(Integer, primary_key=True, index=True)
+    number = Column(Integer, nullable=False, unique=True)
+
+
+class Commune(Base):
+    __tablename__ = "communes"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False, unique=True)
+
+
+class DistrictCommune(Base):
+    __tablename__ = "district_communes"
+    __table_args__ = (
+        UniqueConstraint("district_id", "commune_id", name="uq_district_commune"),
+    )
+    id = Column(Integer, primary_key=True, index=True)
+    district_id = Column(Integer, ForeignKey("districts.id"), nullable=False)
+    commune_id = Column(Integer, ForeignKey("communes.id"), nullable=False)
