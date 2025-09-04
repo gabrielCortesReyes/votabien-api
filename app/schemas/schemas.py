@@ -163,6 +163,7 @@ class CommuneSchema(BaseModel):
     name: str
 
 
-class DistrictWithCommunesSchema(BaseModel):
-    district: DistrictSchema
-    communes: List[CommuneSchema]
+class DistrictWithCommunesAndMembersSchema(BaseModel):
+    district: "DistrictSchema"
+    communes: List["CommuneSchema"]
+    members: List["ParliamentMemberSchema"]
