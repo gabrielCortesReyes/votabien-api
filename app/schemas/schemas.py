@@ -167,3 +167,94 @@ class DistrictWithCommunesAndMembersSchema(BaseModel):
     district: "DistrictSchema"
     communes: List["CommuneSchema"]
     members: List["ParliamentMemberSchema"]
+
+# ------------------------------------------------------------
+# Law Project
+# ------------------------------------------------------------
+class LawProjectSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
+    id: int
+    project_id: int
+    bulletin_number: str
+    name: str
+    entry_date: date
+    
+    initiative_type: str
+    origin_chamber: str
+    admissible: bool
+    admission_date: Optional[date] = None
+    chamber_origin: Optional[str] = None
+
+
+class LawProjectVoteSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
+    id: int
+    law_project_id: int
+    description: str
+    date: datetime
+    
+    total_yes: int
+    total_no: int
+    total_abstention: int
+    total_excused: int
+    
+    quorum: str
+    result: str
+    vote_type: str
+    constitutional_stage: Optional[str] = None
+    
+    regulatory_stage: Optional[str] = None
+    article: Optional[str] = None
+    type: Optional[str] = None
+
+
+class LawProjectVoteDetailSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
+    id: int
+    vote_id: Optional[int] = None
+    parliament_member_id: Optional[int] = None
+    vote_option: str
+
+
+class LawProjectAuthorSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
+    id: int
+    law_project_id: int
+    parliament_member_id: int
+
+
+class LawProjectMatterSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
+    id: int
+    law_project_id: int
+    matter_id: int
+
+
+class LawProjectMinistrySchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
+    id: int
+    law_project_id: int
+    ministry_id: int
+
+# ------------------------------------------------------------
+# Esquema Compuesto: Ley, Votaciones y Detalles
+# ------------------------------------------------------------
+class LawProjectWithVotesSchema(BaseModel):
+    project: LawProjectSchema
+    votes: List[LawProjectVoteSchema]
+
+
+class LawProjectDetailSchema(BaseModel):
+    project: LawProjectSchema
+    authors: List[LawProjectAuthorSchema]
+    matters: List[LawProjectMatterSchema]
+    
+    ministries: List[LawProjectMinistrySchema]
+    votes: List[LawProjectVoteSchema]
+    vote_details: List[LawProjectVoteDetailSchema]
