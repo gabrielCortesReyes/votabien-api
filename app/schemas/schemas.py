@@ -5,6 +5,7 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import date, datetime
 from typing import List, Optional
+from math import ceil
 
 # ------------------------------------------------------------
 # Parliament Member
@@ -242,6 +243,14 @@ class LawProjectMinistrySchema(BaseModel):
     law_project_id: int
     ministry_id: int
 
+
+class PaginatedLawProjectsSchema(BaseModel):
+    items: List[LawProjectSchema]
+    total: int
+    page: int
+    size: int
+    pages: int
+
 # ------------------------------------------------------------
 # Esquema Compuesto: Ley, Votaciones y Detalles
 # ------------------------------------------------------------
@@ -258,3 +267,26 @@ class LawProjectDetailSchema(BaseModel):
     ministries: List[LawProjectMinistrySchema]
     votes: List[LawProjectVoteSchema]
     vote_details: List[LawProjectVoteDetailSchema]
+
+# ------------------------------------------------------------
+# Ministry + Matter
+# ------------------------------------------------------------
+class MinistrySchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    name: str
+
+
+class MatterSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    name: Optional[str] = None
+
+# ------------------------------------------------------------
+# Vote Detail
+# ------------------------------------------------------------
+class VoteDetailHumanSchema(BaseModel):
+    id: int
+    name: str
+    party: Optional[str] = None
+    vote: str

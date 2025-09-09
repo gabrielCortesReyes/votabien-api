@@ -2,7 +2,7 @@
 # MODELS
 # ============================
 
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, Text, DateTime, Boolean, UniqueConstraint, func
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, Text, DateTime, Boolean, func
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 
@@ -213,3 +213,21 @@ class LawProjectAuthor(Base):
     parliament_member_id = Column(Integer, ForeignKey("public.parliament_member.id"), nullable=False)
 
     project = relationship("LawProject", back_populates="authors")
+
+
+class Ministry(Base):
+    __tablename__ = "ministries"
+    __table_args__ = {"schema": "public"}
+
+    id = Column(Integer, primary_key=True, index=True)
+    ministry_id = Column(Integer, nullable=False, unique=True)
+    name = Column(String(255), nullable=False)
+
+
+class Matter(Base):
+    __tablename__ = "matters"
+    __table_args__ = {"schema": "public"}
+
+    id = Column(Integer, primary_key=True, index=True)
+    matter_id = Column(Integer, nullable=False, unique=True)
+    name = Column(String(255), nullable=True)
